@@ -62,6 +62,7 @@ func main() {
 	randOpts := &unsplash.RandomPhotoOpt{
 		SearchQuery: query,
 		Count:       30,
+		Orientation: unsplash.Landscape,
 	}
 
 	// GET!
