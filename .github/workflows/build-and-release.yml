@@ -28,7 +28,7 @@ jobs:
       
       - name: Get version from Makefile
         id: version
-        run: echo ::set-output name=version::$(make version)
+        run: echo ::set-output name=version::v$(make version)
 
       - name: Build
         run: make build
