@@ -186,8 +186,16 @@ func main() {
 				println("Running command:", setCommand)
 			}
 
-			// Run the command
+			// Create the command
 			cmd := exec.Command(command, args...)
+
+			// If we had a clean way to do cross-platform, we would... but we don't. Here lies the Windows code.
+			// // Hide console window on Windows
+			// if runtime.GOOS == "windows" {
+			// 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+			// }
+
+			// Run the command
 			err = cmd.Run()
 			if err != nil {
 				panic(err)
