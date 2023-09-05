@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/hbagdi/go-unsplash/unsplash"
@@ -29,7 +30,7 @@ type Options struct {
 
 	SavePath string `short:"p" long:"save-path" description:"Path to save images to" required:"false"`
 
-	SetCommand string `short:"s" long:"set-command" description:"Command to run to set the wallpaper (%s turns into the image path!)" required:"false"`
+	SetCommand string `short:"s" long:"set-command" description:"Command to run to set the wallpaper (%s for relative path, %S for absolute path)" required:"false"`
 }
 
 func main() {
@@ -164,21 +165,29 @@ func main() {
 
 		// Run the set command
 		if options.SetCommand != "" {
-			if options.Verbose {
-				println("Running set command:", options.SetCommand)
+			// Resolve the absolute path
+			absPath, err := filepath.Abs(filePath)
+			if err != nil {
+				panic(err)
 			}
 
-			// Replace the %s with the file path
+			// Replace the %s and %S with the file path
 			setCommand := strings.ReplaceAll(options.SetCommand, "%s", filePath)
+			setCommand = strings.ReplaceAll(setCommand, "%S", absPath)
 
 			// Split the command into the command and arguments
 			splitCommand := strings.Split(setCommand, " ")
 			command := splitCommand[0]
 			args := splitCommand[1:]
 
+			// Log verbosely
+			if options.Verbose {
+				println("Running command:", setCommand)
+			}
+
 			// Run the command
 			cmd := exec.Command(command, args...)
-			err := cmd.Run()
+			err = cmd.Run()
 			if err != nil {
 				panic(err)
 			}
