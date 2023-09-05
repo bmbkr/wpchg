@@ -62,7 +62,7 @@ func main() {
 	randOpts := &unsplash.RandomPhotoOpt{
 		SearchQuery: query,
 		Count:       30,
-		Orientation: unsplash.Landscape,
+		Orientation: unsplash.Landscape, // Doesn't always work
 	}
 
 	// GET!
@@ -205,6 +205,11 @@ func main() {
 }
 
 func imageMeetsResReq(img *unsplash.Photo, minX int, minY int, maxX int, maxY int) bool {
+	// Also check if the image is horizontal
+	if *img.Width < *img.Height {
+		return false
+	}
+
 	if minX > 0 && *img.Width < minX {
 		return false
 	}
