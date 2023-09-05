@@ -35,32 +35,14 @@ jobs:
       - name: Build for Windows
         run: make build-win
 
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
+      - name: Release!
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./bin/wpchg
-          asset_name: wpchg-${{ steps.version.outputs.version }}-linux-amd64
-          asset_content_type: application/octet-stream
-
-      - name: Upload release asset (Windows)
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./bin/wpchg.exe
-          asset_name: wpchg-${{ steps.version.outputs.version }}-windows-amd64.exe
-          asset_content_type: application/octet-stream
-
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: ${{ steps.version.outputs.version }}
           draft: true
-          prerelease: false
+          files: |
+            ./bin/wpchg
+            ./bin/wpchg.exe
+          tag_name: ${{ steps.version.outputs.version }}
           body: |
             Changes in this release:
             - ...
