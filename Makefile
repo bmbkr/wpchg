@@ -23,6 +23,10 @@ clean:
 install:
 	go install -ldflags "-X main.version=$(VERSION)" ./cmd/wpchg
 
+# Print version
+version:
+	@echo $(VERSION)
+
 # Help message
 help:
 	@echo "Usage: make [target]"
