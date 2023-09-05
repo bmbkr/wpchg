@@ -1,0 +1,66 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.21.0
+
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      
+      - name: Get version from Makefile
+        id: version
+        run: echo ::set-output name=version::$(make version)
+
+      - name: Build
+        run: make build
+
+      - name: Build for Windows
+        run: make build-win
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./bin/wpchg
+          asset_name: wpchg-${{ steps.version.outputs.version }}-linux-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload release asset (Windows)
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./bin/wpchg.exe
+          asset_name: wpchg-${{ steps.version.outputs.version }}-windows-amd64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: ${{ steps.version.outputs.version }}
+          draft: true
+          prerelease: false
+          body: |
+            Changes in this release:
+            - ...
