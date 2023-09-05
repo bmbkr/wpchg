@@ -25,7 +25,7 @@ install:
 
 # Print version
 version:
-	@echo $(VERSION)
+	@echo v$(VERSION)
 
 # Help message
 help:
@@ -36,5 +36,6 @@ help:
 	@echo "  build-win Build the binary for windows"
 	@echo "  clean     Clean the binary"
 	@echo "  install   Install the binary"
+	@echo "  version   Print version number"
 	@echo "  help      Show this help message"
 	@echo ""
