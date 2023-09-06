@@ -25,7 +25,7 @@ Download the appropriate binary from the latest [Release](https://niea.me/wpchg/
 
 ### From Source
 ```
-git clone https://github.com/yourusername/wpchg.git
+git clone https://github.com/bmbkr/wpchg.git
 cd wpchg
 make build
 ```
